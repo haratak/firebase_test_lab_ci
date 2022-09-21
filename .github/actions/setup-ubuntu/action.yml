@@ -1,0 +1,10 @@
+name: Setup Ubuntu
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-java@v1
+      with:
+        java-version: "12.x"
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: "2.x"

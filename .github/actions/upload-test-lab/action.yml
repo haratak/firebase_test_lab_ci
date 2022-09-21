@@ -18,12 +18,6 @@ runs:
       with:
         flutter_channel: ${{ inputs.flutter_channel }}
         flutter_version: ${{ inputs.flutter_version }}
-    - name: Setup Android
-      uses: ./.github/actions/setup-android
-      with:
-        keystore_content: ${{ inputs.keystore_content }}
-        keystore_properties: ${{ inputs.keystore_properties }}
-        working_directory: ${{ inputs.working_directory }}
     - name: Build App Bundle
       run: >
         bundle exec fastlane build_app_bundle

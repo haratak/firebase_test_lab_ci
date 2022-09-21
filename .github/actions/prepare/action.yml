@@ -1,0 +1,27 @@
+name: Prepare Build
+inputs:
+  flutter_channel:
+    required: true
+  flutter_version:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Bundle Install
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+      shell: bash
+    - name: Flutter Cache
+      uses: actions/cache@v2
+      with:
+        path: /opt/hostedtoolcache/flutter
+        key: ${{ runner.os }}-flutter-install-cache-${{ inputs.flutter_version }}
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: ${{ inputs.flutter_channel }}
+        flutter-version: ${{ inputs.flutter_version }}
+    - run: |
+        flutter pub get
+        flutter doctor
+      shell: bash

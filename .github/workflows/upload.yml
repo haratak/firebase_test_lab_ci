@@ -9,7 +9,6 @@ on:
 env:
   flutter_channel: stable
   flutter_version: 3.3.0
-  app_id: jp.co.plusbelief.bergamo
   github_personal_access_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
   firebase_service_key: ${{ secrets.GCP_KEY }}
 
