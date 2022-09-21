@@ -1,0 +1,28 @@
+name: upload app to tast lab
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: ["develop"]
+
+env:
+  flutter_channel: stable
+  flutter_version: 3.3.0
+  app_id: jp.co.plusbelief.bergamo
+  github_personal_access_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  firebase_service_key: ${{ secrets.GCP_KEY }}
+
+jobs:
+  upload-app-bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Upload App Bundle to Play Store
+        uses: ./.github/actions/upload-test-lab
+        with:
+          flutter_channel: ${{ env.flutter_channel }}
+          flutter_version: ${{ env.flutter_version }}
+          firebase_service_key: ${{ env.firebase_service_key }}
+          working_directory: ./android

@@ -1,0 +1,45 @@
+name: Upload App Bundle To Test Lab
+inputs:
+  flutter_channel:
+    required: true
+  flutter_version:
+    required: true
+  firebase_service_key:
+    required: true
+  working_directory:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup Ubuntu
+      uses: ./.github/actions/setup-ubuntu
+    - name: Prepare Build
+      uses: ./.github/actions/prepare
+      with:
+        flutter_channel: ${{ inputs.flutter_channel }}
+        flutter_version: ${{ inputs.flutter_version }}
+    - name: Setup Android
+      uses: ./.github/actions/setup-android
+      with:
+        keystore_content: ${{ inputs.keystore_content }}
+        keystore_properties: ${{ inputs.keystore_properties }}
+        working_directory: ${{ inputs.working_directory }}
+    - name: Build App Bundle
+      run: >
+        bundle exec fastlane build_app_bundle
+      shell: bash
+      working-directory: ${{ inputs.working_directory }}
+    - name: "GCP auth"
+      uses: "google-github-actions/auth@v0"
+      with:
+        credentials_json: "${{ inputs.firebase_service_key }}"
+    - name: "Set up Cloud SDK"
+      uses: "google-github-actions/setup-gcloud@v0"
+    - name: "Use gcloud CLI"
+      run: "gcloud info"
+      shell: bash
+      working-directory: ${{ inputs.working_directory }}
+    - name: Run Test on Firebase Test Lab
+      run: gcloud firebase test android run --type robo --app ../build/app/outputs/bundle/release/app-release.aab --device model=Pixel2,version=28,locale=ja,orientation=portrait
+      shell: bash
+      working-directory: ${{ inputs.working_directory }}
