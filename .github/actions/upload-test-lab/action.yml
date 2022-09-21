@@ -23,6 +23,9 @@ runs:
         bundle exec fastlane build_app_bundle
       shell: bash
       working-directory: ${{ inputs.working_directory }}
+    - name: "androidTest"
+      run: "pushd android && ./gradlew app:assembleAndroidTest && ./gradlew app:assembleDebug -Ptarget=integration_test/test.dart && popd"
+      shell: bash
     - name: "GCP auth"
       uses: "google-github-actions/auth@v0"
       with:
